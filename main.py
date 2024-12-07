@@ -22,14 +22,18 @@ def get_ver_code(REGION):
     url = f"https://fgo.bigcereal.com/{REGION}/verCode.txt"
     response = requests.get(url)
     data = response.text.strip()
-    params = dict(item.split('=') for item in data.split('&'))
+    try:
+        params = dict(item.split('=', 1) for item in data.split('&'))
+    except ValueError as e:
+        print(f"Error parsing data: {data}")
+        raise e
+
     appVer = params.get("appVer")
     verCode = params.get("verCode")
     return appVer, verCode
 
 REGION = os.environ.get("FATE_REGION", "JP")
-APP_VER = get_ver_code(REGION)[0]
-VER_CODE = get_ver_code(REGION)[1]
+APP_VER, VER_CODE = get_ver_code(REGION)
 USER_AGENT = os.environ.get("USER_AGENT_SECRET_2", "Dalvik/2.1.0 (Linux; U; Android 9 Build/PQ3A.190605.09261202)")
 DEVICE_INFO = os.environ.get("DEVICE_INFO_SECRET", "  / Android OS 9 / API-28 (PQ3A.190605.09261202 release-keys/3793265)")
 SERVER_ADDR = "https://game.fate-go.jp"  if REGION == "JP" else "https://game.fate-go.us"
@@ -160,6 +164,10 @@ def top_login(user_id, auth_key, secret_key):
     builder.add_parameter('lastAccessTime', get_time_stamp())
     builder.add_parameter('userId', user_id)
     builder.add_parameter('verCode', VER_CODE)
+    if REGION == "JP":
+        # For now I will leave it empty
+        builder.add_parameter('appCheckErrorMessage', "")
+
     if REGION == "NA":
         builder.add_parameter('country', '36')
 
