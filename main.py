@@ -166,7 +166,7 @@ def top_login(user_id, auth_key, secret_key):
     builder.add_parameter('verCode', VER_CODE)
     if REGION == "JP":
         # For now I will leave it empty
-        builder.add_parameter('appCheckErrorMessage', "")
+        builder.add_parameter('APP_CHECK_SECRET', "")
 
     if REGION == "NA":
         builder.add_parameter('country', '36')
