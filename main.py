@@ -230,7 +230,7 @@ def login(cert):
     if user_id and auth_key and secret_key:
         data = top_login(user_id, auth_key, secret_key)
         name = data['cache']['replaced']['userGame'][0]['name']
-        stone = data['cache']['replaced']['userGame'][0]['stone']
+        stone = data['cache']['replaced']['userGame'][0].get('stone', data['cache']['replaced']['userGame'][0]['freeStone'] + data['cache']['replaced']['userGame'][0]['chargeStone'])
         lv = data['cache']['replaced']['userGame'][0]['lv']
         ticket = 0
         goldenfruit = 0
